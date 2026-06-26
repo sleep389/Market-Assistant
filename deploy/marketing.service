@@ -1,0 +1,33 @@
+[Unit]
+Description=Marketing Multi-Agent System (Streamlit)
+Requires=docker.service
+After=docker.service network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+
+WorkingDirectory=/opt/marketing-multi-agent
+
+# Start the service
+ExecStart=/usr/bin/docker compose -f /opt/marketing-multi-agent/docker-compose.yml up -d
+
+# Stop the service
+ExecStop=/usr/bin/docker compose -f /opt/marketing-multi-agent/docker-compose.yml down
+
+# Restart policy
+ExecReload=/usr/bin/docker compose -f /opt/marketing-multi-agent/docker-compose.yml restart
+
+# Clean up on failure
+ExecStopPost=/usr/bin/docker compose -f /opt/marketing-multi-agent/docker-compose.yml down
+
+Restart=on-failure
+RestartSec=10
+
+# Timeouts
+TimeoutStartSec=120
+TimeoutStopSec=60
+
+[Install]
+WantedBy=multi-user.target
